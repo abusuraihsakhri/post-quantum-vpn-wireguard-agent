@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  post-quantum-vpn-wireguard-engine:
+    build: .
+    container_name: post-quantum-vpn-wireguard-engine
+    ports:
+      - "8000:8000"
+    environment:
+      - AUDIT_SECRET_KEY=post-quantum-vpn-wireguard-engine-prod-audit-key-2026
+      - MODEL_PROVIDER=mock
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
