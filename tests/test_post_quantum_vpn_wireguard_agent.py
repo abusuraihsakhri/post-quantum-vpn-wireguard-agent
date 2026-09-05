@@ -8,11 +8,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
-from agents.base import PHIGuard, AuditLogger, SecurityException
+from agents.base import PHIGuard, AuditLogger, SecurityException, AuditTrail
 from agents.models import SystemTaskPayload, UrgencyLevel, SystemIntegrityStatus
 from agents.workers import InvariantQCWorker, SafetyEscalationWorker, ProtocolConformanceWorker
 from agents.supervisor import SystemSupervisor
-from cli import main
+from cli import main, _resolve_safe_path
 
 
 def test_phi_guard_enforcement():
@@ -63,3 +63,40 @@ def test_supervisor_consensus_and_audit():
     assert main(["audit", "--task-id", "CLI-TEST-01"]) == 0
     assert main(["chat", "Explain", "specifications"]) == 0
     assert main(["verify-audit"]) == 0
+
+
+def test_resolve_safe_path_absolute():
+    """Test that _resolve_safe_path returns absolute paths."""
+    result = _resolve_safe_path("test.csv")
+    assert result.is_absolute()
+
+
+def test_resolve_safe_path_nonexistent_raises():
+    """Test that _resolve_safe_path raises for non-existent files when must_exist=True."""
+    with pytest.raises(FileNotFoundError):
+        _resolve_safe_path("/nonexistent/path/to/file.csv", must_exist=True)
+
+
+def test_audit_trail_with_explicit_key():
+    """Test that AuditTrail accepts an explicit key."""
+    trail = AuditTrail(secret_key="test-secret-key-2026")
+    entry = trail.log("test", "test_tier", "TEST_EVENT", {"data": "value"})
+    assert entry["current_hash"] != ""
+    assert entry["prev_hash"] == "GENESIS_BLOCK_0000000000000000"
+    assert trail.verify_integrity() is True
+
+
+def test_audit_trail_chained_integrity():
+    """Test that audit trail maintains chained integrity across multiple entries."""
+    trail = AuditTrail(secret_key="chain-test-key")
+    trail.log("actor1", "tier1", "EVENT_1", {"seq": 1})
+    trail.log("actor2", "tier2", "EVENT_2", {"seq": 2})
+    trail.log("actor3", "tier3", "EVENT_3", {"seq": 3})
+    assert trail.verify_integrity() is True
+    assert len(trail.get_trail()) == 3
+
+
+def test_batch_missing_file_raises():
+    """Test that batch command raises FileNotFoundError for missing input."""
+    with pytest.raises(FileNotFoundError):
+        main(["batch", "-i", "/nonexistent/input.csv"])

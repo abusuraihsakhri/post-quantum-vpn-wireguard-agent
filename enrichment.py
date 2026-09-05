@@ -414,25 +414,25 @@ class ProductionDeploymentReadinessEngine:
 class PostquantumvpnwireguardagentEnrichmentSuite:
     """Master coordinator executing all enriched domain features."""
     def __init__(self):
-        self.projectsummaryengine = ProjectSummaryEngine()
-        self.enrichmentideasengin = EnrichmentIdeasEngine()
-        self.performancebenchmark = PerformanceBenchmarkingEngine()
-        self.formalverificationen = FormalVerificationEngine()
-        self.interoperabilitytest = InteroperabilityTestingEngine()
-        self.sidechannelresistanc = SidechannelResistanceEngine()
-        self.nistcomplianceengine = NistComplianceEngine()
-        self.productiondeployment = ProductionDeploymentReadinessEngine()
+        self.project_summary_engine = ProjectSummaryEngine()
+        self.enrichment_ideas_engine = EnrichmentIdeasEngine()
+        self.performance_benchmark = PerformanceBenchmarkingEngine()
+        self.formal_verification_engine = FormalVerificationEngine()
+        self.interoperability_test = InteroperabilityTestingEngine()
+        self.sidechannel_resistance = SidechannelResistanceEngine()
+        self.nist_compliance_engine = NistComplianceEngine()
+        self.production_deployment = ProductionDeploymentReadinessEngine()
 
     def execute_all(self, primary_val: float = 1.5, secondary_val: float = 0.5) -> Dict[str, Any]:
         results = {}
-        results["ProjectSummaryEngine"] = self.projectsummaryengine.evaluate(primary_val, secondary_val)
-        results["EnrichmentIdeasEngine"] = self.enrichmentideasengin.evaluate(primary_val, secondary_val)
-        results["PerformanceBenchmarkingEngine"] = self.performancebenchmark.evaluate(primary_val, secondary_val)
-        results["FormalVerificationEngine"] = self.formalverificationen.evaluate(primary_val, secondary_val)
-        results["InteroperabilityTestingEngine"] = self.interoperabilitytest.evaluate(primary_val, secondary_val)
-        results["SidechannelResistanceEngine"] = self.sidechannelresistanc.evaluate(primary_val, secondary_val)
-        results["NistComplianceEngine"] = self.nistcomplianceengine.evaluate(primary_val, secondary_val)
-        results["ProductionDeploymentReadinessEngine"] = self.productiondeployment.evaluate(primary_val, secondary_val)
+        results["ProjectSummaryEngine"] = self.project_summary_engine.evaluate(primary_val, secondary_val)
+        results["EnrichmentIdeasEngine"] = self.enrichment_ideas_engine.evaluate(primary_val, secondary_val)
+        results["PerformanceBenchmarkingEngine"] = self.performance_benchmark.evaluate(primary_val, secondary_val)
+        results["FormalVerificationEngine"] = self.formal_verification_engine.evaluate(primary_val, secondary_val)
+        results["InteroperabilityTestingEngine"] = self.interoperability_test.evaluate(primary_val, secondary_val)
+        results["SidechannelResistanceEngine"] = self.sidechannel_resistance.evaluate(primary_val, secondary_val)
+        results["NistComplianceEngine"] = self.nist_compliance_engine.evaluate(primary_val, secondary_val)
+        results["ProductionDeploymentReadinessEngine"] = self.production_deployment.evaluate(primary_val, secondary_val)
         return results
 
 # Global instance
