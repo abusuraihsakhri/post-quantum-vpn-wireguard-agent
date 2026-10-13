@@ -1,198 +1,93 @@
-# Post Quantum Vpn Wireguard Agent
+# Post-Quantum VPN / WireGuard Concept Evaluator
 
-> **Domain:** Post-Quantum Cryptography & Zero-Knowledge Architecture
-> **Standards:** NIST FIPS 203/204/205, IETF Noise Protocol & PQC Hybrid Extension
+An educational, rules-based prototype for inspecting example telemetry associated with post-quantum VPN and WireGuard design discussions. It consists of two Python evaluation interfaces, a local REST API, and a standalone browser demonstration.
 
-<div align="center">
+**Scope:** This repository does **not** establish VPN tunnels, implement Noise handshakes or ML-KEM, rotate cryptographic keys, test side-channel resistance, or demonstrate compliance with NIST standards. The thresholds (25 and 12 for the primary Python worker set) and status keywords are illustrative application rules, not standardized cryptographic limits.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688.svg?logo=fastapi&logoColor=white)
-![Audit Trail](https://img.shields.io/badge/Audit-HMAC--SHA256_Tamper--Evident-brightgreen.svg)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white)
+## Browser demonstration
 
-</div>
+The static evaluator works offline after its assets load and requires no backend, login, or keys. It evaluates two numeric fields, a critical flag, and a descriptor against the same threshold/keyword rules used by the primary Python workers.
 
----
+To run locally (ES modules require an HTTP origin):
 
-## 📖 What It Does
-
-**Post Quantum Vpn Wireguard Agent** is an analytical platform implementing PQC-WireGuard hybrid post-quantum tunneling with ML-KEM ratchet rotation. It provides a multi-worker evaluation engine for task processing with cryptographic audit trails and zero-PHI outbound protection.
-
----
-
-## 🚀 Installation
-
-### Prerequisites
-- Python 3.10+
-- pip
-
-### Setup
 ```bash
-# Clone the repository
-git clone https://github.com/abusuraihsakhri/post-quantum-vpn-wireguard-agent.git
-cd post-quantum-vpn-wireguard-agent
+python -m http.server 8080 --directory web
+```
 
-# Create virtual environment
+Open `http://127.0.0.1:8080/`. Review the results in the console or export a JSON report. There are no network requests from the app and no generated HMAC audit signatures.
+
+## Python installation
+
+Requirements: Python 3.10+, pip. Clone this repository, then run:
+
+```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install fastapi uvicorn pydantic pytest
+source .venv/bin/activate
+python -m pip install -e ".[api,dev]"
+python -m pytest -q
+node --test tests/test_web.mjs  # optional: Node.js 18+
 ```
 
-### Environment Configuration
-```bash
-# Copy the example environment file
-cp .env.example .env
+The package provides two compatible command-line entry points:
 
-# Edit .env and set your configuration
-# Generate a secure audit key:
-python -c "import os; print(os.urandom(32).hex())"
-```
+- `post-quantum-vpn-wireguard-agent` — primary Pydantic-based supervisor (`cli.py`)
+- `post-quantum-vpn-wireguard-engine` — separate dataclass-based concept engine (`pqc_wireguard/cli.py`)
 
----
-
-## ⚙️ Key Capabilities
-
-- **Multi-Worker Evaluation Engine**: InvariantQC, SafetyEscalation, and ProtocolConformance workers
-- **Zero-PHI Outbound Interceptor**: Active regex inspection blocking SSNs, MRNs, phone numbers, and patient identifiers
-- **Tamper-Evident HMAC-SHA256 Audit Trail**: Chained, cryptographically signed logs for every evaluation
-- **FastAPI REST API**: OpenAPI 3.1 endpoints with Prometheus telemetry (`/metrics`)
-- **Batch Processing**: CSV-based batch task evaluation
-- **Enrichment Suite**: Domain-specific engines for compliance, verification, and deployment readiness
-
----
-
-## 💻 CLI Usage
-
-### 1. Single Task Evaluation
-```bash
-python cli.py audit --task-id TASK-001 --target KEY-01 --primary 28.5 --secondary 14.2 --critical --status DISCORDANT
-```
-
-### 2. Supervisory Chat
-```bash
-python cli.py chat "What is the system status?"
-```
-
-### 3. Batch Processing
-```bash
-python cli.py batch -i sample.csv -o results.csv
-```
-
-### 4. Verify Audit Trail
-```bash
-python cli.py verify-audit
-```
-
-### 5. Launch REST API Server
-```bash
-python cli.py serve --host 127.0.0.1 --port 8000
-```
-
-### Parameter Reference
-| Parameter | Description | Default |
-|:----------|:------------|:--------|
-| `--task-id` | Unique task identifier | TASK-2026-001 |
-| `--target` | Target identifier | KEY-TARGET-01 |
-| `--primary` | Primary metric value | 28.5 |
-| `--secondary` | Secondary metric value | 14.2 |
-| `--critical` | Critical flag | False |
-| `--status` | Status descriptor | DISCORDANT |
-
----
-
-## 🌐 REST API Endpoints
-
-| Method | Endpoint | Description |
-|:-------|:---------|:------------|
-| GET | `/health` | Health check |
-| GET | `/metrics` | Prometheus metrics |
-| POST | `/api/audit` | Submit task for evaluation |
-| POST | `/api/chat` | Supervisory chat |
-| GET | `/api/audit/logs` | Retrieve audit trail |
-
----
-
-## 🧪 Testing
+Example commands:
 
 ```bash
-# Run all tests
-pytest -v
-
-# Run with coverage
-pytest -v --cov=agents --cov=pqc_wireguard
-
-# Run simulation benchmark
-python simulator.py --tasks 1000
+post-quantum-vpn-wireguard-agent audit --task-id TASK-001 --target KEY-01 --primary 28.5 --secondary 14.2 --critical --status DISCORDANT
+post-quantum-vpn-wireguard-agent chat "What is the configuration?"
+post-quantum-vpn-wireguard-agent batch -i sample.csv -o results.csv
+post-quantum-vpn-wireguard-agent verify-audit
+python simulator.py --tasks 100
 ```
 
----
+For batch CSVs, `is_critical_flag` accepts true/false, 1/0 and yes/no (case insensitive). Input and output must be different files. The JSON example is in `sample_payload.json`.
 
-## 🐳 Docker Deployment
+## Local API
 
 ```bash
-# Build and run with Docker Compose
-docker-compose up --build
-
-# Or build and run manually
-docker build -t post-quantum-vpn-wireguard-agent .
-docker run -p 8000:8000 --env-file .env post-quantum-vpn-wireguard-agent
+post-quantum-vpn-wireguard-agent serve --host 127.0.0.1 --port 8000
 ```
 
----
+Visit `http://127.0.0.1:8000/` for the static local evaluator when running from the repository source tree. API docs are at `http://127.0.0.1:8000/docs`.
 
-## 🔒 Security
+| Endpoint | Description |
+| --- | --- |
+| `GET /health` | Service status |
+| `GET /metrics` | JSON task and audit counters (not Prometheus format) |
+| `POST /api/audit` | Evaluate a `SystemTaskPayload` |
+| `POST /api/chat` | Deterministic mock response; no external LLM |
+| `GET /api/audit/logs` | In-memory HMAC hash-chain metadata and verification result |
 
-### Environment Variables
-| Variable | Required | Description |
-|:---------|:---------|:------------|
-| `AUDIT_SECRET_KEY` | Yes (production) | HMAC-SHA256 key for audit trail integrity |
-| `MODEL_PROVIDER` | No | LLM provider: mock, ollama, claude, openai (default: mock) |
-| `HOST` | No | Server host (default: 127.0.0.1) |
-| `PORT` | No | Server port (default: 8000) |
+The Python audit trail signs chained metadata with HMAC-SHA256, and verification recomputes every signature. It is **in-memory only**, so entries are lost on process restart; setting `AUDIT_SECRET_KEY` does not make log storage persistent. The pattern-based identifier guard is not a complete privacy or de-identification solution.
 
-### Security Features
-- **Zero-PHI Guard**: Blocks outbound PHI (SSN, MRN, phone, email, DOB, patient names)
-- **Path Traversal Protection**: Safe file path resolution for batch operations
-- **Audit Trail**: Cryptographic chaining prevents log tampering
-- **Ephemeral Key Fallback**: Warns and generates temporary key if `AUDIT_SECRET_KEY` not set
+The API has **no authentication** and must only be bound to a trusted loopback interface or placed behind an appropriately authenticated reverse proxy. Never expose it directly to the internet or submit real sensitive information.
 
----
+## Docker
 
-## 📁 Project Structure
-
-```
-post-quantum-vpn-wireguard-agent/
-├── agents/                  # Core agent modules
-│   ├── api.py              # FastAPI REST server
-│   ├── base.py             # Security, PHI guard, audit trail
-│   ├── learning.py         # Bayesian calibration engine
-│   ├── llm_factory.py      # LLM provider factory
-│   ├── metrics.py          # Prometheus metrics collector
-│   ├── models.py           # Pydantic data models
-│   ├── streamer.py         # WebSocket telemetry
-│   ├── supervisor.py       # Master orchestrator
-│   └── workers.py          # Specialized evaluation workers
-├── pqc_wireguard/          # PQC-WireGuard tunneling module
-│   ├── agents.py           # Sub-agents (Noise, ML-KEM, Replay)
-│   ├── cli.py              # PQC-WireGuard CLI
-│   ├── engine.py           # Core algorithmic engine
-│   ├── models.py           # Data models
-│   └── server.py           # FastAPI server factory
-├── tests/                  # Test suite
-├── web/index.html          # Operations console UI
-├── cli.py                  # Main CLI entry point
-├── enrichment.py           # Domain enrichment engines
-├── simulator.py            # High-throughput simulation
-├── Dockerfile              # Container build
-├── docker-compose.yml      # Container orchestration
-└── pyproject.toml          # Project configuration
+```bash
+docker compose up --build
 ```
 
----
+Compose binds host port 8000 to `127.0.0.1` only. A `.env` file is optional. To keep an HMAC key consistent for a process, copy `.env.example` to `.env` and set `AUDIT_SECRET_KEY` to a suitably random value. Do not commit secrets.
 
-## 📄 License
+## Architecture and limitations
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
+- `agents/`: primary Pydantic models, three deterministic evaluation workers, audit ledger, supervisor, and FastAPI integration
+- `pqc_wireguard/`: alternate dataclass-based concept evaluator with its own CLI and API factory
+- `enrichment.py`: demonstration threshold-based scoring for named verification/compliance concepts; not formal proofs or validated compliance tests
+- `web/`: static HTML/CSS/JavaScript evaluator that does not depend on Python or WASM
+- `tests/`: Python and browser-evaluator regression tests
+- `.github/workflows/`: CI and static-site publishing workflow
+
+The app is designed for modern browsers supporting JavaScript ES modules, including current Chromium, Firefox, and Safari. Mobile and keyboard layouts are supported; formal cross-browser E2E testing is not yet established.
+
+## Privacy
+
+The static browser app stores results in tab memory only and makes no network requests. JSON exports are generated locally. The Python server retains audit metadata and dossiers in memory; do not assume it is safe for sensitive data without further assessment.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

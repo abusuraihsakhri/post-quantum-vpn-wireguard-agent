@@ -12,11 +12,19 @@ coordinator = PQCWireguardCoordinator()
 
 
 def _resolve_safe_path(path_str: str, must_exist: bool = False) -> Path:
-    """Resolve a user-supplied path safely, preventing path traversal."""
+    """Resolve an explicitly chosen local CLI path to an absolute path."""
     path = Path(path_str).resolve()
     if must_exist and not path.exists():
         raise FileNotFoundError(f"Input file not found: {path_str}")
     return path
+
+def _parse_csv_bool(value: str) -> bool:
+    normalized = str(value or "").strip().lower()
+    if normalized in {"true", "1", "yes", "y"}:
+        return True
+    if normalized in {"false", "0", "no", "n", ""}:
+        return False
+    raise ValueError(f"Invalid is_critical_flag value: {value!r}")
 
 
 def main(argv=None):
@@ -85,7 +93,11 @@ def main(argv=None):
             fieldnames = list(reader.fieldnames or [])
             rows = list(reader)
 
-        out_fields = fieldnames + ["overall_status", "total_alerts", "critical_count", "consensus_summary"]
+        if not fieldnames:
+            raise ValueError("CSV input is missing a header row")
+        if in_path == out_path:
+            raise ValueError("Input and output must be different files")
+        out_fields = list(dict.fromkeys(fieldnames + ["overall_status", "total_alerts", "critical_count", "consensus_summary"]))
         out_rows = []
         for r in rows:
             payload = FrontierPayload(
@@ -94,7 +106,7 @@ def main(argv=None):
                 primary_metric=float(r.get("primary_metric", 15.0)),
                 secondary_metric=float(r.get("secondary_metric", 5.0)),
                 status_descriptor=r.get("status_descriptor", "NOMINAL"),
-                is_critical_flag=bool(r.get("is_critical_flag", False)),
+                is_critical_flag=_parse_csv_bool(r.get("is_critical_flag", False)),
             )
             dossier = coordinator.process(payload)
             row_dict = dict(r)

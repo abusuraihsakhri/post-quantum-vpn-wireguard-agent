@@ -1,112 +1,63 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Post Quantum Vpn Wireguard Engine API",
-    "description": "Enterprise Distributed Component Platform (Clinical & Cryptographic AI) adhering to CAP / CLSI / NIST Standards.",
-    "version": "3.0.0-ENTERPRISE",
-    "contact": {
-      "name": "Dr. Abu Suraih Sakhri",
-      "url": "https://github.com/abusuraihsakhri"
-    }
+    "title": "Post-Quantum VPN / WireGuard Concept Evaluator API",
+    "version": "2.1.0",
+    "description": "Deterministic rules and in-memory HMAC audit metadata; not a WireGuard tunnel or post-quantum cryptographic implementation. GET /openapi.json on a running server provides the authoritative generated schema."
   },
   "paths": {
     "/health": {
       "get": {
-        "summary": "Health and metadata check",
+        "summary": "Local service health",
         "responses": {
           "200": {
-            "description": "System optimal"
+            "description": "JSON status"
           }
         }
       }
     },
     "/metrics": {
       "get": {
-        "summary": "Prometheus operational metrics",
+        "summary": "In-memory counters as JSON",
         "responses": {
           "200": {
-            "description": "Prometheus text metrics"
+            "description": "JSON counters"
           }
         }
       }
     },
     "/api/audit": {
       "post": {
-        "summary": "Dispatch task payload across specialized workers",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "task_id": {
-                    "type": "string"
-                  },
-                  "target_identifier": {
-                    "type": "string"
-                  },
-                  "primary_metric": {
-                    "type": "number"
-                  },
-                  "secondary_metric": {
-                    "type": "number"
-                  },
-                  "status_descriptor": {
-                    "type": "string"
-                  },
-                  "is_critical_flag": {
-                    "type": "boolean"
-                  }
-                },
-                "required": [
-                  "task_id",
-                  "target_identifier",
-                  "primary_metric"
-                ]
-              }
-            }
-          }
-        },
+        "summary": "Evaluate illustrative thresholds and descriptor flags",
         "responses": {
           "200": {
-            "description": "Consensus dossier with HMAC signature"
+            "description": "Rule evaluation dossier"
+          },
+          "422": {
+            "description": "Invalid input or blocked identifier"
           }
         }
       }
     },
     "/api/chat": {
       "post": {
-        "summary": "Air-gapped supervisory conversational assistant",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "query": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "query"
-                ]
-              }
-            }
-          }
-        },
+        "summary": "Return a deterministic mock response",
         "responses": {
           "200": {
-            "description": "Supervisory response"
+            "description": "Mock response"
+          },
+          "422": {
+            "description": "Blocked identifier"
           }
         }
       }
     },
     "/api/audit/logs": {
       "get": {
-        "summary": "Retrieve and cryptographically verify HMAC audit trail",
+        "summary": "Read in-memory HMAC hash-chain metadata",
         "responses": {
           "200": {
-            "description": "Cryptographic audit trail"
+            "description": "Audit ledger snapshot and verification status"
           }
         }
       }

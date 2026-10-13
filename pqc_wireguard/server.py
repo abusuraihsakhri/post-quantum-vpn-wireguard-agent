@@ -15,7 +15,7 @@ def create_app():
 
         app = FastAPI(
             title="PQC-WireGuard: Hybrid Post-Quantum Tunneling & Key Negotiation Supervisor",
-            description="Wraps Noise Protocol frameworks with ML-KEM post-quantum pre-shared keys (PQ-PSK), rotating ratchets every 120 seconds to prevent Harvest-Now-Decrypt-Later.",
+            description="Deterministic threshold-based concept evaluator. Does not implement cryptography, tunneling, or key rotation.",
             version="2.0.0-FRONTIER",
         )
 
