@@ -4,6 +4,7 @@ Domain: Post-Quantum Cryptography & Zero-Knowledge
 Standard: IETF Noise Protocol & PQC Hybrid Extension
 """
 import datetime
+import math
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Any
@@ -25,6 +26,13 @@ class FrontierPayload:
     is_critical_flag: bool = False
     attributes: Dict[str, Any] = field(default_factory=dict)
     timestamp: str = field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat())
+
+    def __post_init__(self) -> None:
+        if not all(
+            isinstance(value, (int, float)) and math.isfinite(value)
+            for value in (self.primary_metric, self.secondary_metric)
+        ):
+            raise ValueError("Metrics must be finite numbers")
 
 
 @dataclass
