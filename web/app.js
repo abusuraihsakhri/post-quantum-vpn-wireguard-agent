@@ -36,6 +36,8 @@ form.addEventListener('submit', event => {
     output.textContent = JSON.stringify(result, null, 2);
     exportButton.disabled = false;
   } catch (err) {
+    latest = null;
+    exportButton.disabled = true;
     error.textContent = err.message || 'Unable to evaluate the input.';
     output.textContent = 'Input was not evaluated.';
   }
