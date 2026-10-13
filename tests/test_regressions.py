@@ -67,8 +67,8 @@ def test_batch_boolean_parsing(tmp_path, capsys, value, expected):
 def test_batch_rejects_invalid_boolean(tmp_path):
     input_file = tmp_path / "input.csv"
     input_file.write_text(
-        "task_id,target_identifier,primary_metric,secondary_metric,is_critical_flag\\n"
-        "T1,K1,10,4,perhaps\\n", encoding="utf-8"
+        "task_id,target_identifier,primary_metric,secondary_metric,is_critical_flag\n"
+        "T1,K1,10,4,perhaps\n", encoding="utf-8"
     )
     with pytest.raises(ValueError, match="Invalid is_critical_flag"):
         main(["batch", "-i", str(input_file), "-o", str(tmp_path / "out.csv")])
@@ -76,7 +76,7 @@ def test_batch_rejects_invalid_boolean(tmp_path):
 
 def test_batch_rejects_overwriting_input(tmp_path):
     path = tmp_path / "input.csv"
-    path.write_text("task_id,primary_metric\\nT1,10\\n", encoding="utf-8")
+    path.write_text("task_id,primary_metric\nT1,10\n", encoding="utf-8")
     with pytest.raises(ValueError, match="different files"):
         main(["batch", "-i", str(path), "-o", str(path)])
 
